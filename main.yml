@@ -1,0 +1,28 @@
+---
+- name: Common tasks
+  hosts: all
+  gather_facts: true 
+  become: true
+  roles:
+  - roles/common
+
+- name: deploy haproxy
+  hosts: frontends
+  gather_facts: true
+  become: true
+  roles:
+  - roles/loadbalancer 
+
+- name: deploy postgres
+  hosts: appdbs
+  gather_facts: true
+  become: true
+  roles:
+  - roles/database
+
+- name: setup app servers 
+  hosts: apps
+  gather_facts: true
+  become: true
+  roles:
+  - roles/application

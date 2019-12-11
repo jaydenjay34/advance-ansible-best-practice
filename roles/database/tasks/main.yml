@@ -1,0 +1,23 @@
+---
+- name: install postgresql 
+  yum:
+    name: postgresql-server
+    state: latest
+- name: enable postgresql at boot
+  service:
+    name: postgresql
+    enabled: yes
+- name: check PG_VERSION exists in /var/lib/pgsql/data/
+  stat: 
+    path: /var/lib/pgsql/data/PG_VERSION
+  register: pgversion
+- name: initialize postgres if PG_VERSION does not exist
+  command: postgresql-setup initdb
+  when: pgversion.stat.exists == False
+- name: initialize postgres if PG_VERSION does not exist 2
+  command: chkconfig postgresql on
+  when: pgversion.stat.exists == False
+- name: start postgres
+  service:
+    name: postgresql.service
+    state: started

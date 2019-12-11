@@ -1,0 +1,33 @@
+[frontends]
+frontend1.0de0.internal ansible_ssh_host=frontend1.0de0.example.opentlc.com shortname=frontend1
+
+[apps]
+app1.0de0.internal ansible_ssh_host=app1.0de0.example.opentlc.com shortname=app1
+app2.0de0.internal ansible_ssh_host=app2.0de0.example.opentlc.com shortname=app2
+
+[appdbs]
+appdb1.0de0.internal ansible_ssh_host=appdb1.0de0.example.opentlc.com shortname=appdb1
+
+[support]
+support1.0de0.internal ansible_ssh_host=support1.0de0.example.opentlc.com shortname=support1
+
+[internal:children]
+frontends
+apps
+appdbs
+
+[internal:vars]
+GUID="{{ lookup('env', 'GUID') }}"
+
+[3tierapp:children]
+frontends
+apps
+appdbs
+support
+
+[3tierapp:vars]
+timeout=60
+ansible_become=yes
+ansible_user=ec2-user
+ansible_ssh_private_key_file="~/.ssh/0de0key.pem"
+ansible_ssh_common_args="-o StrictHostKeyChecking=no"
